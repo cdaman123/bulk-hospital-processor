@@ -9,3 +9,4 @@ Flask-Migrate==4.0.7
 psycopg2-binary==2.9.9
 marshmallow==3.21.3
 python-dotenv==1.0.1
+tenacity==8.3.0
