@@ -13,7 +13,7 @@ class BatchRepository:
         return batch
 
     def get_by_id(self, batch_id: str) -> Batch | None:
-        return Batch.query.get(batch_id)  # type: ignore
+        return db.session.get(Batch, batch_id)
 
     def add_result(self, result: BatchHospitalResult) -> BatchHospitalResult:
         db.session.add(result)

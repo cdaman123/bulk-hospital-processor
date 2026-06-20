@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, cast
 
 import httpx
 from tenacity import (
@@ -39,7 +39,7 @@ class HospitalDirectoryClient:
             try:
                 response = client.post(url, json=payload)
                 response.raise_for_status()
-                return response.json()  # type: ignore
+                return cast(dict[str, Any], response.json())
             except httpx.HTTPStatusError as e:
                 logger.error(
                     f"HTTP error {e.response.status_code} "

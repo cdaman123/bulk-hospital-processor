@@ -15,7 +15,7 @@ from app.repositories.batch_repository import BatchRepository
 bp = Blueprint("api", __name__, description="Operations on hospitals")
 
 
-@bp.errorhandler(CSVValidationError)  # type: ignore[misc]
+@bp.errorhandler(CSVValidationError)
 def handle_csv_validation_error(e: CSVValidationError) -> tuple[Response, int]:
     return jsonify(
         {
@@ -26,12 +26,12 @@ def handle_csv_validation_error(e: CSVValidationError) -> tuple[Response, int]:
     ), 400
 
 
-@bp.errorhandler(BulkProcessorError)  # type: ignore[misc]
+@bp.errorhandler(BulkProcessorError)
 def handle_bulk_processor_error(e: BulkProcessorError) -> tuple[Response, int]:
     return jsonify({"error": "Processing Error", "message": str(e)}), 500
 
 
-@bp.errorhandler(Exception)  # type: ignore[misc]
+@bp.errorhandler(Exception)
 def handle_general_exception(e: Exception) -> tuple[Response, int] | HTTPException:
     if isinstance(e, HTTPException):
         return e
@@ -44,11 +44,11 @@ def handle_general_exception(e: Exception) -> tuple[Response, int] | HTTPExcepti
     ), 500
 
 
-@bp.route("/hospitals/bulk", methods=["POST"])  # type: ignore[misc]
-@bp.arguments(FileUploadSchema, location="files")  # type: ignore[misc]
-@bp.response(200, BulkProcessResponseSchema)  # type: ignore[misc]
-@bp.alt_response(400, schema=ErrorSchema, description="Validation Error")  # type: ignore[misc]
-@bp.alt_response(500, schema=ErrorSchema, description="Internal Error")  # type: ignore[misc]
+@bp.route("/hospitals/bulk", methods=["POST"])
+@bp.arguments(FileUploadSchema, location="files")
+@bp.response(200, BulkProcessResponseSchema)
+@bp.alt_response(400, schema=ErrorSchema, description="Validation Error")
+@bp.alt_response(500, schema=ErrorSchema, description="Internal Error")
 def bulk_process_hospitals(files_data: dict[str, Any]) -> dict[str, Any]:
     """
     Upload and process a bulk CSV file of hospitals.

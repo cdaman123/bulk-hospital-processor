@@ -1,10 +1,10 @@
 import uuid
 from datetime import datetime, timezone
 
-from app.extensions import db
+from app.extensions import Base, db
 
 
-class Batch(db.Model):  # type: ignore
+class Batch(Base):
     __tablename__ = "batches"
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -20,7 +20,7 @@ class Batch(db.Model):  # type: ignore
     )
 
 
-class BatchHospitalResult(db.Model):  # type: ignore
+class BatchHospitalResult(Base):
     __tablename__ = "batch_hospital_results"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
