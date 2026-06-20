@@ -30,7 +30,7 @@ class BulkProcessResponseSchema(Schema):
     hospitals = fields.List(fields.Nested(HospitalResultSchema), required=True)
 
 
-class ErrorSchema(Schema):
+class APIErrorSchema(Schema):
     error = fields.Str()
     message = fields.Str()
     row = fields.Int(allow_none=True)

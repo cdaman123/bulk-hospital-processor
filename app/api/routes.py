@@ -5,7 +5,7 @@ from flask import Response, current_app, jsonify, request
 from flask_smorest import Blueprint, abort
 from werkzeug.exceptions import HTTPException
 
-from app.api.schemas import BulkProcessResponseSchema, ErrorSchema, FileUploadSchema
+from app.api.schemas import APIErrorSchema, BulkProcessResponseSchema, FileUploadSchema
 from app.core.batch_processor import BatchProcessor
 from app.core.csv_parser import CSVParser
 from app.core.exceptions import BulkProcessorError, CSVValidationError
@@ -47,8 +47,8 @@ def handle_general_exception(e: Exception) -> tuple[Response, int] | HTTPExcepti
 @bp.route("/hospitals/bulk", methods=["POST"])
 @bp.arguments(FileUploadSchema, location="files")
 @bp.response(200, BulkProcessResponseSchema)
-@bp.alt_response(400, schema=ErrorSchema, description="Validation Error")
-@bp.alt_response(500, schema=ErrorSchema, description="Internal Error")
+@bp.alt_response(400, schema=APIErrorSchema, description="Validation Error")
+@bp.alt_response(500, schema=APIErrorSchema, description="Internal Error")
 def bulk_process_hospitals(files_data: dict[str, Any]) -> dict[str, Any]:
     """
     Upload and process a bulk CSV file of hospitals.
