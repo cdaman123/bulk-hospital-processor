@@ -10,6 +10,13 @@ This project follows a clean architectural pattern:
 - **Client (`app/core/hospital_client.py`)**: Wraps external API calls with retries and exponential backoff using `httpx` and `tenacity`.
 - **Repository (`app/repositories/batch_repository.py`)**: Persistence layer abstracting the SQLAlchemy ORM.
 
+## Implemented Features
+
+- **Performance Optimization**: Implemented using `ThreadPoolExecutor` for concurrent network requests.
+- **CSV Validation**: Fully validated upfront before processing (handles limits and required fields).
+- **Comprehensive Testing**: Full test suite included (Unit + Integration testing using `pytest`).
+- **Dockerization**: Provided via `Dockerfile` and `docker-compose.yml` for isolated container execution.
+
 ## Setup
 
 ### Using Docker (Recommended)
