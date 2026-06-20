@@ -11,7 +11,7 @@ lint:
 	poetry run mypy app/
 
 format:
-	poetry run black .
+	poetry run ruff format .
 
 run:
 	poetry run flask run
