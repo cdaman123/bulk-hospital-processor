@@ -7,3 +7,5 @@ __pycache__/
 .coverage
 .ruff_cache/
 .mypy_cache/
+*.db
+*.sqlite3
