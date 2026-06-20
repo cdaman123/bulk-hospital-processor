@@ -1,4 +1,4 @@
-.PHONY: install test lint format run docker-up docker-down db-upgrade
+.PHONY: install test lint format typecheck run docker-up docker-down db-upgrade
 
 install:
 	poetry install
@@ -8,10 +8,12 @@ test:
 
 lint:
 	poetry run ruff check .
-	poetry run mypy app/
 
 format:
 	poetry run ruff format .
+
+typecheck:
+	poetry run mypy app/
 
 run:
 	poetry run flask run

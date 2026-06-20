@@ -64,6 +64,23 @@ Once the server is running, you can view the Swagger UI and explore the schemas 
 make test
 ```
 
+## Code Quality
+
+This project uses `ruff` for fast linting and formatting, and `mypy` for static type checking.
+
+You can run these tools using the provided Makefile:
+
+```bash
+# Format code using ruff
+make format
+
+# Lint code using ruff
+make lint
+
+# Typecheck code using mypy
+make typecheck
+```
+
 ## Known Limitations & Trade-offs
 
 - **Memory constraints**: Currently loads the whole CSV into memory. Max rows are limited to 20, so this is fine. For huge files, stream parsing should be considered.
