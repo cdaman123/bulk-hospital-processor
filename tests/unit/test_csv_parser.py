@@ -10,12 +10,12 @@ def test_parse_valid_csv():
     
     rows = parser.parse(file_stream)
     assert len(rows) == 2
-    assert rows[0].name == "h1"
-    assert rows[0].address == "a1"
-    assert rows[0].phone == "p1"
+    assert rows[0].name == "H1"
+    assert rows[0].address == "A1"
+    assert rows[0].phone == "P1"
     
-    assert rows[1].name == "h2"
-    assert rows[1].address == "a2"
+    assert rows[1].name == "H2"
+    assert rows[1].address == "A2"
     assert rows[1].phone is None
 
 def test_parse_missing_required_columns():

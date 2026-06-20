@@ -30,5 +30,4 @@ def test_bulk_upload_invalid_csv(client):
 
 def test_bulk_upload_no_file(client):
     response = client.post("/hospitals/bulk")
-    assert response.status_code == 400
-    assert "No file part" in response.get_json()["message"]
+    assert response.status_code == 422

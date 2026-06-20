@@ -1,4 +1,7 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields
+
+class FileUploadSchema(Schema):
+    file = fields.Raw(required=True, metadata={'type': 'string', 'format': 'binary', 'description': 'CSV file containing hospital data'})
 
 class HospitalResultSchema(Schema):
     row = fields.Int(required=True)
@@ -15,3 +18,8 @@ class BulkProcessResponseSchema(Schema):
     processing_time_seconds = fields.Float(required=True)
     batch_activated = fields.Bool(required=True)
     hospitals = fields.List(fields.Nested(HospitalResultSchema), required=True)
+
+class ErrorSchema(Schema):
+    error = fields.Str()
+    message = fields.Str()
+    row = fields.Int(allow_none=True)

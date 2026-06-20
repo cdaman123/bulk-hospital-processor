@@ -51,6 +51,13 @@ curl -X POST http://localhost:8000/hospitals/bulk \
   -F "file=@tests/fixtures/sample.csv"
 ```
 
+## API Documentation (Swagger)
+
+This API includes automatically generated OpenAPI documentation using `flask-smorest`.
+Once the server is running, you can view the Swagger UI and explore the schemas at:
+
+[http://localhost:8000/docs](http://localhost:8000/docs)
+
 ## Running Tests
 
 ```bash

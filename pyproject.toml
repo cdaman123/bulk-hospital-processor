@@ -16,9 +16,10 @@ Flask-SQLAlchemy = "3.1.1"
 SQLAlchemy = "2.0.30"
 Flask-Migrate = "4.0.7"
 psycopg2-binary = "2.9.9"
-marshmallow = "3.21.3"
+marshmallow = "^4.3.0"
 python-dotenv = "1.0.1"
 tenacity = "8.3.0"
+flask-smorest = "^0.47.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.2.2"
@@ -54,3 +55,4 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+pythonpath = ["."]
