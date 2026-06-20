@@ -1,14 +1,16 @@
 FROM python:3.11-slim as builder
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install poetry==1.8.3
+COPY pyproject.toml poetry.lock* ./
+RUN poetry config virtualenvs.in-project true \
+    && poetry install --only main --no-interaction --no-ansi
 
 FROM python:3.11-slim
 WORKDIR /app
 
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
+COPY --from=builder /app/.venv /app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
 
 COPY . .
 

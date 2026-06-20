@@ -26,21 +26,24 @@ This project follows a clean architectural pattern:
 
 ### Local Development
 
-1. Create a virtual environment:
+1. Install Poetry if you haven't already:
    ```bash
-   python -m venv venv
-   source venv/bin/activate
+   pip install poetry
    ```
 2. Install dependencies:
    ```bash
    make install
    ```
-3. Set up environment variables in `.env`.
-4. Initialize the database:
+3. Activate the virtual environment:
+   ```bash
+   poetry shell
+   ```
+4. Set up environment variables in `.env`.
+5. Initialize the database:
    ```bash
    make db-upgrade
    ```
-5. Run the server:
+6. Run the server:
    ```bash
    make run
    ```

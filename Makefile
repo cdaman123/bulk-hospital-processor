@@ -1,23 +1,23 @@
 .PHONY: install test lint format run docker-up docker-down db-upgrade
 
 install:
-	pip install -r requirements-dev.txt
+	poetry install
 
 test:
-	pytest tests/ -v
+	poetry run pytest tests/ -v
 
 lint:
-	ruff check .
-	mypy app/
+	poetry run ruff check .
+	poetry run mypy app/
 
 format:
-	black .
+	poetry run black .
 
 run:
-	flask run
+	poetry run flask run
 
 db-upgrade:
-	flask db upgrade
+	poetry run flask db upgrade
 
 docker-up:
 	docker-compose up --build -d
