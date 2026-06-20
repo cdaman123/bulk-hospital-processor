@@ -1,8 +1,10 @@
 import uuid
 from datetime import datetime, timezone
+
 from app.extensions import db
 
-class Batch(db.Model):
+
+class Batch(db.Model):  # type: ignore
     __tablename__ = "batches"
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -13,9 +15,12 @@ class Batch(db.Model):
     batch_activated = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-    results = db.relationship("BatchHospitalResult", backref="batch", lazy=True, cascade="all, delete-orphan")
+    results = db.relationship(
+        "BatchHospitalResult", backref="batch", lazy=True, cascade="all, delete-orphan"
+    )
 
-class BatchHospitalResult(db.Model):
+
+class BatchHospitalResult(db.Model):  # type: ignore
     __tablename__ = "batch_hospital_results"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

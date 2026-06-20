@@ -1,16 +1,17 @@
+import logging
 import time
 import uuid
-import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import IO
+from typing import IO, Any
 
-from app.core.csv_parser import CSVParser
-from app.core.hospital_client import HospitalDirectoryClient
-from app.repositories.batch_repository import BatchRepository
-from app.models.batch import Batch, BatchHospitalResult
+from app.core.csv_parser import CSVParser, HospitalRow
 from app.core.exceptions import CSVValidationError, ExternalAPIError
+from app.core.hospital_client import HospitalDirectoryClient
+from app.models.batch import Batch, BatchHospitalResult
+from app.repositories.batch_repository import BatchRepository
 
 logger = logging.getLogger(__name__)
+
 
 class BatchProcessor:
     def __init__(
@@ -18,16 +19,16 @@ class BatchProcessor:
         csv_parser: CSVParser,
         client: HospitalDirectoryClient,
         repository: BatchRepository,
-        max_concurrent_requests: int = 10
+        max_concurrent_requests: int = 10,
     ):
         self.csv_parser = csv_parser
         self.client = client
         self.repository = repository
         self.max_concurrent_requests = max_concurrent_requests
 
-    def process_bulk_upload(self, file_stream: IO[bytes]) -> dict:
+    def process_bulk_upload(self, file_stream: IO[bytes]) -> dict[str, Any]:
         start_time = time.time()
-        
+
         # 1. Parse and validate CSV
         try:
             rows = self.csv_parser.parse(file_stream)
@@ -42,20 +43,20 @@ class BatchProcessor:
             total_hospitals=len(rows),
             processed_hospitals=0,
             failed_hospitals=0,
-            batch_activated=False
+            batch_activated=False,
         )
         self.repository.create_batch(batch)
 
         # 3. Process each row concurrently
         results = []
         all_success = True
-        
+
         with ThreadPoolExecutor(max_workers=self.max_concurrent_requests) as executor:
             future_to_row = {
-                executor.submit(self._create_hospital, row, batch_id): row 
+                executor.submit(self._create_hospital, row, batch_id): row
                 for row in rows
             }
-            
+
             for future in as_completed(future_to_row):
                 row_data = future_to_row[future]
                 try:
@@ -67,16 +68,20 @@ class BatchProcessor:
                     else:
                         batch.processed_hospitals += 1
                 except Exception as exc:
-                    logger.exception(f"Row {row_data.row_number} generated an exception: {exc}")
+                    logger.exception(
+                        f"Row {row_data.row_number} generated an exception: {exc}"
+                    )
                     all_success = False
                     batch.failed_hospitals += 1
-                    results.append(BatchHospitalResult(
-                        batch_id=batch_id,
-                        row=row_data.row_number,
-                        name=row_data.name,
-                        status="failed",
-                        error_detail="Internal processing error"
-                    ))
+                    results.append(
+                        BatchHospitalResult(
+                            batch_id=batch_id,
+                            row=row_data.row_number,
+                            name=row_data.name,
+                            status="failed",
+                            error_detail="Internal processing error",
+                        )
+                    )
 
         # Save results to db
         self.repository.add_results(results)
@@ -110,25 +115,23 @@ class BatchProcessor:
                     "hospital_id": r.hospital_id,
                     "name": r.name,
                     "status": r.status,
-                    "error_detail": r.error_detail
-                } for r in sorted(results, key=lambda x: x.row)
-            ]
+                    "error_detail": r.error_detail,
+                }
+                for r in sorted(results, key=lambda x: x.row)
+            ],
         }
 
-    def _create_hospital(self, row, batch_id: str) -> BatchHospitalResult:
+    def _create_hospital(self, row: HospitalRow, batch_id: str) -> BatchHospitalResult:
         try:
             response_data = self.client.create_hospital(
-                name=row.name,
-                address=row.address,
-                phone=row.phone,
-                batch_id=batch_id
+                name=row.name, address=row.address, phone=row.phone, batch_id=batch_id
             )
             return BatchHospitalResult(
                 batch_id=batch_id,
                 row=row.row_number,
                 hospital_id=response_data.get("id"),
                 name=row.name,
-                status="created"
+                status="created",
             )
         except ExternalAPIError as e:
             return BatchHospitalResult(
@@ -136,14 +139,16 @@ class BatchProcessor:
                 row=row.row_number,
                 name=row.name,
                 status="failed",
-                error_detail=f"API Error: {e.status_code}"
+                error_detail=f"API Error: {e.status_code}",
             )
         except Exception as e:
-            logger.exception(f"Unexpected error creating hospital for row {row.row_number}")
+            logger.exception(
+                f"Unexpected error creating hospital for row {row.row_number}"
+            )
             return BatchHospitalResult(
                 batch_id=batch_id,
                 row=row.row_number,
                 name=row.name,
                 status="failed",
-                error_detail=str(e)
+                error_detail=str(e),
             )

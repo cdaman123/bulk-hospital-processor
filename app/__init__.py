@@ -1,9 +1,11 @@
 from flask import Flask
-from app.config import Config
-from app.extensions import db, migrate
 from flask_smorest import Api
 
-def create_app(config_class=Config):
+from app.config import Config
+from app.extensions import db, migrate
+
+
+def create_app(config_class: type[Config] = Config) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_class)
 
@@ -12,6 +14,7 @@ def create_app(config_class=Config):
     api = Api(app)
 
     from app.api.routes import bp as api_bp
+
     api.register_blueprint(api_bp)
 
     return app
